@@ -17,7 +17,10 @@ class POSM_SERVER:
         self.report = self.df.copy()
         self.generated_data = {
             "megafon": {"front": [], "cash_register": [], "showcase": [], "interior": []},
-            "yota" : {"front": [], "cash_register": [], "showcase": [], "interior": []}
+            "yota" : {"front": [], "cash_register": [], "showcase": [], "interior": []},
+            'total_sum': [],
+            'res': [],
+            'count_of_zones': []
         }
         self.zones = ['front', 'cash_register', 'showcase', 'interior']
         self.ops = ['megafon', 'yota']
@@ -25,7 +28,6 @@ class POSM_SERVER:
         print('Load data have ended')
     
     def segment_image(self, local_image_path):
-        print(local_image_path)
         url = 'http://127.0.0.1:5000/predict'
         data = {'image_path': local_image_path}
         response = requests.post(url, json=data)
@@ -35,7 +37,6 @@ class POSM_SERVER:
     
     def get_image_by_url(self, url) -> str:
         save_as = str(os.path.join('server', 'images', url.rsplit('/', 1)[-1] + '.jpg'))
-        print(url)
         # urlretrieve(url, save_as) # раскомментировать, когда фото будет доступно
         return save_as
 
@@ -101,11 +102,49 @@ class POSM_SERVER:
             else:
                 areas[zone] = {}
         return areas
-    
+
     def calcl_res_par(self):
-        pass
-
-
+        cnt = 0
+        summa = 0
+        for op in self.ops:
+            for zone in self.zones:
+                val = self.generated_data[op][zone][len(self.generated_data[op][zone]) - 1]
+                if not isnan(val):
+                    cnt += 1
+                    summa += val
+        self.generated_data['total_sum'].append(summa)
+        cnt = cnt // 2
+        self.generated_data['count_of_zones'].append(cnt)
+        if cnt == 0:
+            self.generated_data['res'].append("Диспаритет")
+        elif cnt == 1:
+            if summa < 2:
+                self.generated_data['res'].append("Диспаритет")
+            elif summa < 4:
+                self.generated_data['res'].append("Паритет")
+            else:
+                self.generated_data['res'].append("Приоритет")
+        elif cnt == 2:
+            if summa < 4:
+                self.generated_data['res'].append("Диспаритет")
+            elif summa < 7:
+                self.generated_data['res'].append("Паритет")
+            else:
+                self.generated_data['res'].append("Приоритет")
+        elif cnt == 3:
+            if summa < 5:
+                self.generated_data['res'].append("Диспаритет")
+            elif summa < 10:
+                self.generated_data['res'].append("Паритет")
+            else:
+                self.generated_data['res'].append("Приоритет")
+        elif cnt == 4:
+            if summa < 6:
+                self.generated_data['res'].append("Диспаритет")
+            elif summa < 13:
+                self.generated_data['res'].append("Паритет")
+            else:
+                self.generated_data['res'].append("Приоритет")
 
 
     def generate_data(self, total_areas_pos) -> dict:
@@ -130,28 +169,34 @@ class POSM_SERVER:
                         self.generated_data[op][zone].append(2)
                     else:
                         self.generated_data[op][zone].append(0)
- 
+        self.calcl_res_par()
+
     def generate_report(self):
         for zone in self.zone_translater:
             for op in self.ops:
-                print(zone, op)
                 self.report.insert(len(self.report.columns),
                                 'Оценка_' + op + '_' + self.zone_translater[zone],
                                 self.generated_data['megafon'][zone], False)
+        self.report.insert(len(self.report.columns),
+                           'Количество зон',
+                           self.generated_data['count_of_zones'], False)
+        self.report.insert(len(self.report.columns),
+                                'Баллы',
+                                self.generated_data['total_sum'], False)
+        self.report.insert(len(self.report.columns),
+                                'Оценка_прог',
+                                self.generated_data['res'], False)
         self.report.to_excel('server/reports/report.xlsx')
 
 
     def run(self) -> None:
         print("Start generate report")
-        print()
         for idx in self.df.index:
             pos = {}
             for zone, trans_zone in self.zone_translater.items():
                 pos[zone] = self.df[trans_zone][idx]
             pos = self.get_images_for_pos(pos)
-            print(len(pos))
             segmented_pos = self.segment_pos(pos)
-            print(len(segmented_pos))
             total_areas_pos = self.calc_area_for_pos(segmented_pos)
             self.generate_data(total_areas_pos)
         self.generate_report()
