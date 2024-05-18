@@ -28,7 +28,9 @@ def predict():
     results = model.predict(source=image_path)
 
     # Return the prediction results
-    return jsonify(results[0].tojson())
+    if not results[0]:
+        return "[]"
+    return results[0].tojson()
 
 # Run the Flask application
 if __name__ == '__main__':
