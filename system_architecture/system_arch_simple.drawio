@@ -1,0 +1,88 @@
+<mxfile host="app.diagrams.net" modified="2024-05-18T11:19:08.216Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" etag="_ei_jQ5BsitXuCBNTTlt" version="24.4.3" type="google">
+  <diagram name="Page-1" id="6mgrjFv5v3D1odC5MP7s">
+    <mxGraphModel grid="0" page="0" gridSize="10" guides="0" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="6jlCXhnixeCqRIsfp9DH-6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;startArrow=classic;startFill=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;curved=0;" edge="1" parent="1" source="6jlCXhnixeCqRIsfp9DH-1" target="6jlCXhnixeCqRIsfp9DH-2">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="610" y="170" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="5yszFdCzzGrdYxJ434db-7" value="HTTP" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" connectable="0" vertex="1" parent="6jlCXhnixeCqRIsfp9DH-6">
+          <mxGeometry x="-0.164" y="2" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6jlCXhnixeCqRIsfp9DH-9" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;curved=0;" edge="1" parent="1" target="6jlCXhnixeCqRIsfp9DH-1" source="5yszFdCzzGrdYxJ434db-6">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="280" y="194.66666666666674" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6jlCXhnixeCqRIsfp9DH-11" value="HTTP" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" connectable="0" vertex="1" parent="6jlCXhnixeCqRIsfp9DH-9">
+          <mxGeometry x="-0.0797" relative="1" as="geometry">
+            <mxPoint x="1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6jlCXhnixeCqRIsfp9DH-10" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;curved=0;" edge="1" parent="1" source="6jlCXhnixeCqRIsfp9DH-1" target="5yszFdCzzGrdYxJ434db-6">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="280" y="224.66666666666674" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6jlCXhnixeCqRIsfp9DH-12" value="HTTP" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" connectable="0" vertex="1" parent="6jlCXhnixeCqRIsfp9DH-10">
+          <mxGeometry x="0.0965" y="-2" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6jlCXhnixeCqRIsfp9DH-1" value="Backend&lt;br&gt;REST API" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="450" y="180" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="6jlCXhnixeCqRIsfp9DH-2" value="Сегментация и классификация&amp;nbsp;&lt;div&gt;(МФ, Yota, конкуренты)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="610" y="80" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="6jlCXhnixeCqRIsfp9DH-7" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.75;entryDx=0;entryDy=0;startArrow=classic;startFill=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;curved=0;" edge="1" parent="1" source="5yszFdCzzGrdYxJ434db-3" target="6jlCXhnixeCqRIsfp9DH-1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="600" y="305" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="5yszFdCzzGrdYxJ434db-8" value="HTTP" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" connectable="0" vertex="1" parent="6jlCXhnixeCqRIsfp9DH-7">
+          <mxGeometry x="0.182" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="5yszFdCzzGrdYxJ434db-1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;curved=0;" edge="1" parent="1" source="5yszFdCzzGrdYxJ434db-4" target="5yszFdCzzGrdYxJ434db-3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="840" y="300" as="sourcePoint" />
+            <mxPoint x="780" y="305" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6jlCXhnixeCqRIsfp9DH-5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;dashed=1;curved=0;" edge="1" parent="1" source="6jlCXhnixeCqRIsfp9DH-4" target="6jlCXhnixeCqRIsfp9DH-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6jlCXhnixeCqRIsfp9DH-15" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=1;curved=0;" edge="1" parent="1" source="6jlCXhnixeCqRIsfp9DH-4" target="6jlCXhnixeCqRIsfp9DH-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6jlCXhnixeCqRIsfp9DH-4" value="Размеченный датасет&amp;nbsp;&lt;div&gt;(МФ, Yota, конкуренты)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="870" y="80" width="150" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="5yszFdCzzGrdYxJ434db-2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;dashed=1;curved=0;" edge="1" parent="1" source="6jlCXhnixeCqRIsfp9DH-13" target="5yszFdCzzGrdYxJ434db-4">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="960" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6jlCXhnixeCqRIsfp9DH-13" value="Обработка и ручная разметка" style="rounded=1;whiteSpace=wrap;html=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="180" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="5yszFdCzzGrdYxJ434db-3" value="Классификация&amp;nbsp;&lt;div&gt;(Теле2, МТС, БиЛайн)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="610" y="260" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="5yszFdCzzGrdYxJ434db-4" value="Размеченный датасет (Теле2, МТС, БиЛайн)" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="880" y="260" width="150" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="5yszFdCzzGrdYxJ434db-6" value="REST запрос" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="180" width="100" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
