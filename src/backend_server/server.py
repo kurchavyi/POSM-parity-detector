@@ -12,7 +12,11 @@ import json
 class POSM_SERVER:
     def __init__(self) -> None:
         print('Start')
-        self.df = read_excel("server/data/new_data_pos.xlsx", 'Где оценивать')
+        self.paths_to_dir = self.get_paths_to_dir()
+        self.name_data = 'new_data_pos.xlsx'
+        self.name_of_list = 'Где оценивать'
+        path_to_data = os.path.join(self.paths_to_dir['data'], self.name_data)
+        self.df = read_excel(path_to_data, self.name_of_list)
         self.post_segment = 'http://127.0.0.1:5000/predict'
         self.report = self.df.copy()
         self.generated_data = {
@@ -27,6 +31,13 @@ class POSM_SERVER:
         self.zone_translater = {"front": "Фасад", "cash_register": "Касса", "showcase": "Витрины", "interior": "Интерьер"}
         print('Load data have ended')
     
+    def get_paths_to_dir(self):
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        paths_to_dir = {'data': os.path.join(BASE_DIR, 'data'),
+                      'images': os.path.join(BASE_DIR, 'images'),
+                      'reports': os.path.join(BASE_DIR, 'reports')}
+        return paths_to_dir
+
     def segment_image(self, local_image_path):
         url = 'http://127.0.0.1:5000/predict'
         data = {'image_path': local_image_path}
@@ -36,7 +47,7 @@ class POSM_SERVER:
 
     
     def get_image_by_url(self, url) -> str:
-        save_as = str(os.path.join('server', 'images', url.rsplit('/', 1)[-1] + '.jpg'))
+        save_as = str(os.path.join(self.paths_to_dir['images'], url.rsplit('/', 1)[-1] + '.jpg'))
         # urlretrieve(url, save_as) # раскомментировать, когда фото будет доступно
         return save_as
 
@@ -74,6 +85,7 @@ class POSM_SERVER:
             area = cv2.contourArea(contour)
             return area
         class_areas = {}
+        print(annotation)
         for result in annotation:
             class_name = result['name']
             confidence = result['confidence']
@@ -186,7 +198,7 @@ class POSM_SERVER:
         self.report.insert(len(self.report.columns),
                                 'Оценка_прог',
                                 self.generated_data['res'], False)
-        self.report.to_excel('server/reports/report.xlsx')
+        self.report.to_excel(str(os.path.join(self.paths_to_dir['reports'], 'report.xlsx')))
 
 
     def run(self) -> None:
@@ -196,7 +208,9 @@ class POSM_SERVER:
             for zone, trans_zone in self.zone_translater.items():
                 pos[zone] = self.df[trans_zone][idx]
             pos = self.get_images_for_pos(pos)
+            print(pos)
             segmented_pos = self.segment_pos(pos)
+            print(segmented_pos)
             total_areas_pos = self.calc_area_for_pos(segmented_pos)
             self.generate_data(total_areas_pos)
         self.generate_report()
