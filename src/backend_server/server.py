@@ -7,17 +7,27 @@ import numpy as np
 import cv2
 import uuid
 from loguru import logger
-
+from flask import Flask, request
 import requests
 import json
 
+app = Flask(__name__)
 
-class POSM_SERVER:
-    def __init__(self) -> None:
+@app.route('/report', methods=['POST'])
+def generate_report_by_excel():
+    name_of_file, name_of_sheet = request.json['name_of_file'], request.json['name_of_sheet']
+    generator = ReportGenerator(name_of_file, name_of_sheet)
+    generator.run()
+    response = {'status': 'succed'}
+    return response, 200
+
+
+class ReportGenerator:
+    def __init__(self, name_of_file, name_of_sheet) -> None:
         logger.debug('Start')
         self.paths_to_dir = self.get_paths_to_dir()
-        self.name_data = 'new_data_pos.xlsx'
-        self.name_of_sheet = 'Где оценивать'
+        self.name_data = name_of_file
+        self.name_of_sheet = name_of_sheet
         path_to_data = os.path.join(self.paths_to_dir['data'], self.name_data)
         self.df = read_excel(path_to_data, self.name_of_sheet)
         self.post_segment = 'http://127.0.0.1:5000/predict'
@@ -100,8 +110,6 @@ class POSM_SERVER:
         height, width = image.shape[:2]
 
         points = np.array(coordinates).reshape(-1, 2)
-        # points[:, 0] *= width
-        # points[:, 1] *= height
         points = points.astype(np.int32)
 
         # Create a mask from the polygon coordinates
@@ -130,13 +138,10 @@ class POSM_SERVER:
             y_coords = result['segments']['y']
             pixel_area = calc_area(x_coords, y_coords)
 
-            # классификация класса другие
-            # формирование coordinates
             if class_name == 'Другая реклама':
                 coordinates = []
                 for x, y in zip(x_coords, y_coords):
                     coordinates.extend((x, y))
-                # порезать фото
                 save_as = os.path.join(self.paths_to_dir['cropped_images'], str(uuid.uuid4()) + ".jpg")
                 self.crop_seg_image(coordinates, image_file, save_as)
                 ans = self.classify_image(save_as)
@@ -271,7 +276,6 @@ class POSM_SERVER:
         self.generate_report()
         logger.debug("report is ready")
 
-
 if __name__ == "__main__":
-    server = POSM_SERVER()
-    server.run()
+    print("Starting the server...")
+    app.run(port=5002, debug=True)

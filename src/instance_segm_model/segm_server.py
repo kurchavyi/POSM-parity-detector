@@ -1,8 +1,6 @@
 import os
 from flask import Flask, request, jsonify
 from ultralytics import YOLO
-from ultralytics.engine.results import Results
-import json
 
 
 app = Flask(__name__)
@@ -23,7 +21,7 @@ def predict():
 
     if not results[0]:
         return "[]"
-    return results[0].tojson()
+    return results[0].tojson(), 200
 
 if __name__ == '__main__':
     print("Starting the segmentation model server...")
