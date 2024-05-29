@@ -1,6 +1,8 @@
 import os
 from flask import Flask, request, jsonify
 from ultralytics import YOLO
+from ultralytics.engine.results import Results
+import json
 
 
 app = Flask(__name__)
