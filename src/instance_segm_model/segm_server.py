@@ -1,7 +1,8 @@
 import os
 from flask import Flask, request, jsonify
 from ultralytics import YOLO
-
+import cv2
+import numpy as np
 
 app = Flask(__name__)
 
@@ -11,13 +12,18 @@ model = YOLO(model_path)
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    image_path = request.json['image_path']
-    
-    # Check if the image exists
-    if not os.path.isfile(image_path):
-        return jsonify({'error': 'Image file does not exist'}), 400
+    image_file = request.files['image'].read()
 
-    results = model.predict(source=image_path)
+    # Convert the image file to a numpy array
+    np_img = np.frombuffer(image_file, np.uint8)
+
+        # Decode the image array to OpenCV format
+    image = cv2.imdecode(np_img, cv2.IMREAD_COLOR)
+    # # Check if the image exists
+    # if not os.path.isfile(image_path):
+    #     return jsonify({'error': 'Image file does not exist'}), 400
+
+    results = model.predict(source=image, conf=0.45)
 
     if not results[0]:
         return "[]"

@@ -56,22 +56,30 @@ class ReportGenerator:
         return paths_to_dir
 
 
-    def segment_image(self, local_image_path):
-        data = {'image_path': local_image_path}
-        response = requests.post(self.post_segment, json=data)
+    def segment_image(self, image):
+        _, image_encoded = cv2.imencode('.jpg', image)
+        image_bites = image_encoded.tobytes()
+        response = requests.post(self.post_segment, files={'image': image_bites})
         response_data = json.loads(response.text)
         return response_data
     
-    def classify_image(self, local_image_path):
-        data = {'image_path': local_image_path}
-        response = requests.post(self.post_classify, json=data)
+    def classify_image(self, image):
+        _, image_encoded = cv2.imencode('.jpg', image)
+        image_bites = image_encoded.tobytes()
+        data = {'image': image}
+        response = requests.post(self.post_classify, files={'image': image_bites})
         response_data = json.loads(response.text)
         return response_data
 
     def get_image_by_url(self, url) -> str:
-        save_as = str(os.path.join(self.paths_to_dir['images'], url.rsplit('/', 1)[-1] + '.jpg'))
-        urlretrieve(url, save_as)
-        return save_as
+        response = requests.get(url)
+        response.raise_for_status()  # Check if the request was successful
+        # Convert the image content to a NumPy array
+        np_img = np.frombuffer(response.content, np.uint8)
+        # Decode the NumPy array to an OpenCV image
+        img = cv2.imdecode(np_img, cv2.IMREAD_COLOR)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        return img
 
     def is_nan(self, value) -> bool:
         if not isinstance(value, float):
@@ -84,17 +92,17 @@ class ReportGenerator:
         new_pos = {}
         for zone, url in pos.items():
                 if not self.is_nan(url):
-                    path = self.get_image_by_url(url)
-                    new_pos[zone] = path
+                    img = self.get_image_by_url(url)
+                    new_pos[zone] = img
                 else:
                     new_pos[zone] = None
         return new_pos
     
     def segment_pos(self, pos: dict) -> dict:
         new_pos = {}
-        for zone, path in pos.items():
-            if not path is None:
-                new_pos[zone] = self.segment_image(path)
+        for zone, img in pos.items():
+            if not img is None:
+                new_pos[zone] = self.segment_image(img)
                 if new_pos[zone] == []:
                     new_pos[zone] = None
             else:
@@ -102,11 +110,7 @@ class ReportGenerator:
         return new_pos
 
 
-    def crop_seg_image(self, coordinates, image_file, save_as):
-        image = cv2.imread(image_file)
-        if image is None:
-            logger.debug(f"Failed to load image: {image_file}")
-
+    def crop_seg_image(self, coordinates, image):
         height, width = image.shape[:2]
 
         points = np.array(coordinates).reshape(-1, 2)
@@ -121,11 +125,11 @@ class ReportGenerator:
         # Crop the image to the bounding box of the polygon
         x, y, w, h = cv2.boundingRect(points)
         cropped_segmented_area = segmented_area[y:y+h, x:x+w]
+        
+        return cropped_segmented_area
 
-        cv2.imwrite(save_as, cropped_segmented_area)
 
-
-    def calc_area_for_zone(self, annotation, image_file):
+    def calc_area_for_zone(self, annotation, image):
         def calc_area(x_coords, y_coords):
             contour = np.array(list(zip(x_coords, y_coords)), dtype=np.float32).reshape((-1, 1, 2))
             area = cv2.contourArea(contour)
@@ -134,6 +138,8 @@ class ReportGenerator:
         for result in annotation:
             class_name = result['name']
             confidence = result['confidence']
+            logger.debug(class_name)
+            logger.debug(confidence)
             x_coords = result['segments']['x']
             y_coords = result['segments']['y']
             pixel_area = calc_area(x_coords, y_coords)
@@ -142,11 +148,9 @@ class ReportGenerator:
                 coordinates = []
                 for x, y in zip(x_coords, y_coords):
                     coordinates.extend((x, y))
-                save_as = os.path.join(self.paths_to_dir['cropped_images'], str(uuid.uuid4()) + ".jpg")
-                self.crop_seg_image(coordinates, image_file, save_as)
-                ans = self.classify_image(save_as)
+                cropped_image = self.crop_seg_image(coordinates, image)
+                ans = self.classify_image(cropped_image)
                 class_name = ans["class_name"]
-                os.remove(save_as)
 
             if class_name in class_areas:
                 class_areas[class_name].append(pixel_area)
@@ -269,9 +273,11 @@ class ReportGenerator:
             pos = {}
             for zone, trans_zone in self.zone_translater.items():
                 pos[zone] = self.df[trans_zone][idx]
+            logger.debug(pos)
             pos_images = self.get_images_for_pos(pos)
             segmented_pos = self.segment_pos(pos_images)
             total_areas_pos = self.calc_area_for_pos(segmented_pos, pos_images)
+            logger.debug(total_areas_pos)
             self.generate_data(total_areas_pos)
         self.generate_report()
         logger.debug("report is ready")
