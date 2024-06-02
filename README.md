@@ -30,7 +30,11 @@ The developed system consists of 3 main components.
 
 All components are separate Flask servers and realize communication between each other using HTTP requests. 
 ### Backend server
-Vitaly description
+The backend server receives a path to an Excel file from the client. Each row of the file contains the following information about a point of sales (POS): pos ID, photos of each POSM placement zone, and other details.
+
+Next, the backend reads this Excel file and processes all the points of sales. For each POS, the photos of each placement zone are segmented using the segment server microservice. Then, for the "other" category, the real mobile operator is determined using the classifier microservice. Finally, the area occupied by POSM is calculated for each operator accordingly. Based on this area, parity, disparity, or priority is assigned for each POS.
+
+The client receives from the server a path to an Excel file that contains information about the competitiveness of each POS.
 ### Segmentation model server
 A pre-trained YOLOv8n-seg was taken as the model for the instance segmentation task, and then it was pre-trained on the original dataset for 150 epochs. 
 
